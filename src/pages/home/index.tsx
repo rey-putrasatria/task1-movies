@@ -1,3 +1,4 @@
+import { Layout } from '@/components'
 import { access_token } from '@/utils/endpoint'
 import { Col, Row } from 'antd'
 import axios from 'axios'
@@ -8,7 +9,7 @@ import { useEffect, useState } from 'react'
 const Home = () => {
   const router = useRouter()
   const { request_token } = router.query
-  const [data, setData] = useState([]) 
+  const [data, setData] = useState([])
 
   useEffect(() => {
     const getMovie = async () => {
@@ -29,17 +30,19 @@ const Home = () => {
     getMovie()
   }, [])
   return (
-    <div>
-      <Row gutter={[16, 16]} className="lg:px-12 md:px-6 sm:px-6 px-4 my-2">
-        {data.map((item: any, index) => (
-          <Col xs={12} sm={12} md={8} lg={4} key={item.id}>
-            {/* <Link href={`/product/${item._id}`}> */}
+    <Layout>
+      <div>
+        <Row gutter={[16, 16]} className="lg:px-12 md:px-6 sm:px-6 px-4 my-2">
+          {data.map((item: any, index) => (
+            <Col xs={12} sm={12} md={8} lg={4} key={item.id}>
+              {/* <Link href={`/product/${item._id}`}> */}
               <div>hakdnwkd</div>
-            {/* </Link> */}
-          </Col>
-        ))}
-      </Row>
-    </div>
+              {/* </Link> */}
+            </Col>
+          ))}
+        </Row>
+      </div>
+    </Layout>
   )
 }
 export default Home
