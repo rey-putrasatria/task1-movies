@@ -1,5 +1,4 @@
 import { Layout } from '@/components'
-import { access_token } from '@/utils/endpoint'
 import { Col, Row } from 'antd'
 import axios from 'axios'
 import Link from 'next/link'
@@ -19,7 +18,7 @@ const Home = () => {
         headers: {
           accept: 'application/json',
           Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2Mjg2N2UyNmYwZTg2ZjZkMzY1OTQ0ZjBkZWQzZDkyMCIsInN1YiI6IjY0ZmVlNDAwNmEyMjI3MDBmZDFmNzhjZiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.sfuHgEpQ-5dV51_9suKqhapacKCLnoW79MOHs5DJHko',
+            'Bearer '+process.env.ACCESS_TOKEN,
         },
       }
 

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Button } from 'antd'
 import { Inter } from 'next/font/google'
 import Link from 'next/link'
-import axios from 'axios'
 import useRequestToken from '@/hooks/useRequestToken'
 import { useRouter } from 'next/router'
 
