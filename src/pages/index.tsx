@@ -4,14 +4,27 @@ import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import useRequestToken from '@/hooks/useRequestToken'
 import { useRouter } from 'next/router'
+import { NextPage } from 'next'
+import useSessionId from '@/hooks/useSessionId'
 
 const inter = Inter({ subsets: ['latin'] })
 
-const Home: React.FC = () => {
-  const { token } = useRequestToken()
+const Home: React.FC<NextPage> = () => {
   const router = useRouter()
-  const { request_token } = router.query
-  const authUrl = `https://www.themoviedb.org/authenticate/${token}?redirect_to=http://localhost:3000/home`
+  const { requestToken, setRequestToken, fetchRequestToken } = useRequestToken()
+  const { sessionId, fetchSessionId } = useSessionId(requestToken)
+
+  useEffect(() => {
+    const savedRequestToken = sessionStorage.getItem('requestToken')
+    if (savedRequestToken) {
+      setRequestToken(savedRequestToken)
+    }
+
+    if (!sessionId && router.query.approved === 'true') {
+      fetchSessionId()
+    }
+  }, [requestToken, sessionId, router.query.approved])
+
   return (
     <main
       className={`bg-[#0d253f] flex h-screen flex-col items-center justify-center gap-4 ${inter.className}`}
@@ -21,17 +34,22 @@ const Home: React.FC = () => {
         alt="Logo"
         className="lg:w-1/2 w-full px-8"
       />
-      {/* Gunakan tautan untuk mengarahkan ke halaman autentikasi TMDb */}
-      <Link href={authUrl}>
+      <h1>{sessionId}</h1>
+      {sessionId ? (
+        <Link href="/movies">
+          <Button>See Your Movie</Button>
+        </Link>
+      ) : (
         <Button
           className="bg-[#90cea1] border-none hover:bg-[#01b4e4] mb-2"
           style={{
             color: 'white',
           }}
+          onClick={fetchRequestToken}
         >
           Login Yuk!
         </Button>
-      </Link>
+      )}
     </main>
   )
 }
