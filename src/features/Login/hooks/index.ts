@@ -1,8 +1,6 @@
-// useRequestToken.js
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+import { useState } from "react"
 
-const useRequestToken = () => {
+export const useRequestToken = () => {
   const [requestToken, setRequestToken] = useState('')
 
   const fetchRequestToken = async () => {
@@ -13,7 +11,7 @@ const useRequestToken = () => {
       )
       const { request_token } = await requestTokenResponse.json()
       setRequestToken(request_token)
-      
+
       sessionStorage.setItem('requestToken', request_token)
       window.location.href = `https://www.themoviedb.org/authenticate/${request_token}?redirect_to=http://localhost:3000`
     } catch (error) {
@@ -24,4 +22,20 @@ const useRequestToken = () => {
   return { requestToken, setRequestToken, fetchRequestToken }
 }
 
-export default useRequestToken
+export const useSessionId = (requestToken: string) => {
+  const [sessionId, setSessionId] = useState('')
+
+  const fetchSessionId = async () => {
+    try {
+      const sessionIdResponse = await fetch(
+        `https://api.themoviedb.org/3/authentication/session/new?api_key=${process.env.API_KEY}&request_token=${requestToken}`
+      )
+      const { session_id } = await sessionIdResponse.json()
+      setSessionId(session_id)
+    } catch (error) {
+      console.error('Gagal mendapatkan session ID:', error)
+    }
+  }
+
+  return { sessionId, fetchSessionId }
+}
