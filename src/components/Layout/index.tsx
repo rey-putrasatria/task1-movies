@@ -5,7 +5,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <div>
       <TopBar />
-      {children}
+      <div className='lg:mx-12 mx-6'>{children}</div>
     </div>
   )
 }

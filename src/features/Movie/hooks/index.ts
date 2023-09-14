@@ -1,16 +1,23 @@
 import MovieType from '@/types/MovieType'
-import { MOVIE_LIST } from '@/utils/endpoint'
+import { MOVIE_LIST, MOVIE_SEARCH } from '@/utils/endpoint'
+import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { useEffect, useState } from 'react'
 
-const useGetMovie = () => {
-  const [data, setData] = useState<MovieType[]>([])
-
-  useEffect(() => {
-    const getMovie = async () => {
+const useGetMovie = (params: Record<string, any>, current: Number) => {
+  return useQuery({
+    queryKey: ['getMovies', {params, current}],
+    queryFn: async () => {
       const options = {
         method: 'GET',
-        url: MOVIE_LIST,
+        url: params.search ? MOVIE_SEARCH : MOVIE_LIST,
+        params: {
+          query: params.search,
+          include_adult: 'false',
+          include_video: 'false',
+          language: 'en-US',
+          page: current,
+          sort_by: params.sort,
+        },
         headers: {
           accept: 'application/json',
           Authorization: 'Bearer ' + process.env.ACCESS_TOKEN,
@@ -18,7 +25,7 @@ const useGetMovie = () => {
       }
 
       const res = await axios.request(options)
-      setData(res.data.results)
+      console.log(res.data)
       const formattedData: MovieType[] = res.data.results.map((movie: any) => ({
         original_title: movie.original_title || '',
         poster_path: movie.poster_path || '',
@@ -26,11 +33,10 @@ const useGetMovie = () => {
         overview: movie.overview || '',
       }))
 
-      setData(formattedData)
-      console.log(res.data)
-    }
-    getMovie()
-  }, [])
-  return { data }
+      const totalPages = res.data.total_pages
+
+      return { data: formattedData, totalPages }
+    },
+  })
 }
 export default useGetMovie
