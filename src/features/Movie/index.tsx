@@ -27,7 +27,7 @@ const MovieFeature: React.FC = () => {
   return (
     <Layout>
       <div className="w-full">
-        <div style={{ margin: '30px 0 30px 0' }}>
+        <div className='m-12'>
           <FormInput onSubmit={handleSubmit} />
         </div>
         <Row gutter={[16, 16]} className="lg:px-12 md:px-6 sm:px-6 px-4 my-2">
@@ -40,10 +40,9 @@ const MovieFeature: React.FC = () => {
 
         <div
           className="flex justify-center"
-          style={{ margin: '2rem 0 2rem 0' }}
         >
           <Pagination
-            className="m-24"
+            className="m-12"
             current={current}
             onChange={onChange}
             total={200}

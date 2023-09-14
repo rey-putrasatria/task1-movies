@@ -32,7 +32,6 @@ const LoginFeature: React.FC = () => {
         alt="Logo"
         className="lg:w-1/2 w-full px-8"
       />
-      <h1>{sessionId}</h1>
       {sessionId ? (
         <Link href="/movies">
           <Button>See Your Movie</Button>
