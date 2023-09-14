@@ -3,9 +3,9 @@ import { MOVIE_LIST, MOVIE_SEARCH } from '@/utils/endpoint'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 
-const useGetMovie = (params: Record<string, any>, current: Number) => {
+export const useGetMovie = (params: Record<string, any>, current: Number) => {
   return useQuery({
-    queryKey: ['getMovies', {params, current}],
+    queryKey: ['getMovies', { params, current }],
     queryFn: async () => {
       const options = {
         method: 'GET',
@@ -17,6 +17,7 @@ const useGetMovie = (params: Record<string, any>, current: Number) => {
           language: 'en-US',
           page: current,
           sort_by: params.sort,
+          with_genres: params.filter
         },
         headers: {
           accept: 'application/json',
@@ -39,4 +40,23 @@ const useGetMovie = (params: Record<string, any>, current: Number) => {
     },
   })
 }
-export default useGetMovie
+
+export const useGetGenre = () => {
+  return useQuery({
+    queryKey: ['getGenre'],
+    queryFn: async () => {
+      const res = await axios.get(
+        'https://api.themoviedb.org/3/genre/movie/list',
+        {
+          params: { language: 'en' },
+          headers: {
+            accept: 'application/json',
+            Authorization: 'Bearer ' + process.env.ACCESS_TOKEN,
+          },
+        }
+      )
+      console.log(res.data.genres)
+      return res.data.genres
+    },
+  })
+}

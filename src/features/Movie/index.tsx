@@ -3,7 +3,7 @@ import { Col, Pagination, PaginationProps, Row } from 'antd'
 import { useState } from 'react'
 import CardMovie from './sections/CardMovie'
 import FormInput from './sections/FormInput'
-import useGetMovie from './hooks'
+import { useGetMovie } from './hooks'
 import { TypeFormApi } from './type'
 import Loading from '@/components/Loading'
 

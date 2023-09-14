@@ -4,3 +4,8 @@ export type TypeFormApi = {
   filter?: string
   page?: string
 }
+
+export type TypeGenre = {
+  id: number,
+  name: string,
+}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { Input, Select, Button, Row, Col } from 'antd'
-import { TypeFormApi } from '../../type'
+import { TypeFormApi, TypeGenre } from '../../type'
+import { useGetGenre } from '../../hooks'
 
 const { Option } = Select
 
@@ -9,6 +10,7 @@ interface FormInputProps {
 }
 
 const FormInput: React.FC<FormInputProps> = ({ onSubmit }) => {
+  const { data } = useGetGenre()
   const [searchValue, setSearchValue] = useState<string>('')
   const [sortValue, setSortValue] = useState<string>('popularity.desc')
   const [filterValue, setFilterValue] = useState<string>('')
@@ -34,7 +36,7 @@ const FormInput: React.FC<FormInputProps> = ({ onSubmit }) => {
 
       <Col xs={24} sm={6}>
         <Select
-        placeholder='Sort'
+          placeholder="Sort"
           options={[
             { value: 'popularity.desc', label: 'Popularity Desc' },
             { value: 'popularity.asc', label: 'Popularity Asc' },
@@ -42,17 +44,24 @@ const FormInput: React.FC<FormInputProps> = ({ onSubmit }) => {
             { value: 'revenue.desc', label: 'Revenue Desc' },
           ]}
           className="w-full"
-          // value={sortValue}
           onChange={(value) => setSortValue(value)}
         />
       </Col>
 
       <Col xs={24} sm={6}>
-        <Input
+        <Select
           placeholder="Filter"
-          value={filterValue}
-          onChange={(e) => setFilterValue(e.target.value)}
-        />
+          className="w-full"
+          onChange={(value) => setFilterValue(value)}
+        >
+          {data?.map((option: TypeGenre) => {
+            return (
+              <Option key={option.id} value={option.id}>
+                {option.name}
+              </Option>
+            )
+          })}
+        </Select>
       </Col>
 
       <Col xs={24} sm={6}>
