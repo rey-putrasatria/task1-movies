@@ -1,41 +1,24 @@
-import { useState } from "react"
+import axiosInstance from "./adapter/axiosInstance"
 
-export const serviceRequestToken = () => {
-  const [requestToken, setRequestToken] = useState('')
-
-  const fetchRequestToken = async () => {
-    try {
-      const requestTokenResponse = await fetch(
-        'https://api.themoviedb.org/3/authentication/token/new?api_key=' +
-          process.env.API_KEY
-      )
-      const { request_token } = await requestTokenResponse.json()
-      setRequestToken(request_token)
-
-      sessionStorage.setItem('requestToken', request_token)
-      window.location.href = `https://www.themoviedb.org/authenticate/${request_token}?redirect_to=http://localhost:3000`
-    } catch (error) {
-      console.error('Gagal mendapatkan request token:', error)
-    }
-  }
-
-  return { requestToken, setRequestToken, fetchRequestToken }
+export const fetchRequestToken = async () => {
+  const requestTokenResponse = await axiosInstance.get(
+    'https://api.themoviedb.org/3/authentication/token/new?api_key=' +
+      process.env.API_KEY
+  )
+  const { request_token } = requestTokenResponse.data
+  sessionStorage.setItem('requestToken', request_token)
+  return request_token
 }
 
-export const serviceSessionId = (requestToken: string) => {
-    const [sessionId, setSessionId] = useState('')
+export const fetchSessionId = async (requestToken: string | null) => {
+  const sessionIdResponse = await axiosInstance.get(
+    `https://api.themoviedb.org/3/authentication/session/new?api_key=${process.env.API_KEY}&request_token=${requestToken}`
+  )
+  const { session_id } = sessionIdResponse.data
+  sessionStorage.setItem('sessionId', session_id)
+  return session_id
+}
 
-    const fetchSessionId = async () => {
-      try {
-        const sessionIdResponse = await fetch(
-          `https://api.themoviedb.org/3/authentication/session/new?api_key=${process.env.API_KEY}&request_token=${requestToken}`
-        )
-        const { session_id } = await sessionIdResponse.json()
-        setSessionId(session_id)
-      } catch (error) {
-        console.error('Gagal mendapatkan session ID:', error)
-      }
-    }
-
-    return { sessionId, fetchSessionId }
+export const redirectToAuthentication = (requestToken: string) => {
+  window.location.href = `https://www.themoviedb.org/authenticate/${requestToken}?redirect_to=http://localhost:3000`
 }

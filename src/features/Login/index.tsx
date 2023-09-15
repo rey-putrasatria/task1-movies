@@ -3,26 +3,21 @@ import { Button } from 'antd'
 import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useRequestToken, useSessionId } from './hooks'
+import { useRequestTokenMutation, useSessionIdQuery } from './hooks'
 
 const inter = Inter({ subsets: ['latin'] })
 
 const LoginFeature: React.FC = () => {
   const router = useRouter()
-  const { requestToken, setRequestToken, fetchRequestToken } = useRequestToken()
-  const { sessionId, fetchSessionId } = useSessionId(requestToken)
+  const { mutate: requestMutate } = useRequestTokenMutation()
+  const { data: sessionIdQuery, mutate: sessionMutate } = useSessionIdQuery()
 
   useEffect(() => {
-    const savedRequestToken = sessionStorage.getItem('requestToken')
-    if (savedRequestToken) {
-      setRequestToken(savedRequestToken)
+    if (router.query.request_token) {
+      const storage: string | null = sessionStorage.getItem('requestToken')
+      sessionMutate(storage)
     }
-
-    if (!sessionId && router.query.approved === 'true') {
-      fetchSessionId()
-    }
-  }, [requestToken, sessionId, router.query.approved])
-
+  }, [router.query.approved])
   return (
     <main
       className={`bg-[#0d253f] flex h-screen flex-col items-center justify-center gap-4 ${inter.className}`}
@@ -32,9 +27,16 @@ const LoginFeature: React.FC = () => {
         alt="Logo"
         className="lg:w-1/2 w-full px-8"
       />
-      {sessionId ? (
-        <Link href="/movies">
-          <Button>See Your Movie</Button>
+      {sessionIdQuery ? (
+        <Link href="/movie">
+          <Button
+            className="bg-[#90cea1] border-none hover:bg-[#01b4e4] mb-2"
+            style={{
+              color: 'white',
+            }}
+          >
+            See Your Movie
+          </Button>
         </Link>
       ) : (
         <Button
@@ -42,7 +44,7 @@ const LoginFeature: React.FC = () => {
           style={{
             color: 'white',
           }}
-          onClick={fetchRequestToken}
+          onClick={() => requestMutate()}
         >
           Login Yuk!
         </Button>
