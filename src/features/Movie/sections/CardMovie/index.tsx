@@ -1,10 +1,10 @@
 import React from 'react'
 import MovieType from '@/types/MovieType'
 import { PATH_IMAGE } from '@/utils/endpoint'
-import { Card, Tag } from 'antd'
+import { Card, Rate, Tag } from 'antd'
 
 const CardMovie = ({ data }: { data: MovieType }) => {
-  const { original_title, poster_path, release_date } = data
+  const { original_title, poster_path, release_date, vote_average } = data
   const image = poster_path
     ? PATH_IMAGE + poster_path
     : 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg'
@@ -18,11 +18,17 @@ const CardMovie = ({ data }: { data: MovieType }) => {
     >
       <Tag color={'blue'}>{release_date}</Tag>
       <div className="absolute inset-0 p-4 flex flex-col justify-end">
-        <h3 className="text-xl font-semibold mb-2 text-white">
+        <h3 className="text-xl font-semibold text-white">
           {original_title.length > 20
             ? original_title.slice(0, 20) + '...'
             : original_title}
         </h3>
+        {vote_average > 2 ? (
+          <div className='flex gap-1 items-center'>
+            <p className='text-yellow-400 mt-1'>{vote_average}</p>
+            <Rate disabled defaultValue={(vote_average * 5) / 10} count={5} />
+          </div>
+        ) : null}
       </div>
     </Card>
   )

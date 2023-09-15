@@ -12,7 +12,7 @@ interface FormInputProps {
 const FormInput: React.FC<FormInputProps> = ({ onSubmit }) => {
   const { data } = useGetGenre()
   const [searchValue, setSearchValue] = useState<string>('')
-  const [sortValue, setSortValue] = useState<string>('popularity.desc')
+  const [sortValue, setSortValue] = useState<string>('')
   const [filterValue, setFilterValue] = useState<string>('')
 
   const handleFinish = () => {
@@ -22,6 +22,9 @@ const FormInput: React.FC<FormInputProps> = ({ onSubmit }) => {
       filter: filterValue,
     }
     onSubmit(values)
+    setSearchValue('')
+    setSortValue('')
+    setFilterValue('')
   }
 
   return (
