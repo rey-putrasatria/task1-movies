@@ -1,25 +1,23 @@
-import { MOVIE_LIST, MOVIE_SEARCH } from '@/constant/endpoint'
 import { getSessionId, getSessionProfile } from '@/helpers/storage'
 import axiosInstance from '@/services/adapter/axiosInstance'
-import { message } from 'antd'
 import MovieType from '@/types/MovieType'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { message } from 'antd'
 
-export const useGetMovie = (params: Record<string, any>, current: Number) => {
+export const useFavoriteMovie = () => {
   return useQuery({
-    queryKey: ['getMovies', { params, current }],
+    queryKey: ['favoriteMovie'],
     queryFn: async () => {
+      const profile = getSessionProfile()
+      const sessionId = getSessionId()
       const res = await axiosInstance.get(
-        `${params.search ? MOVIE_SEARCH : MOVIE_LIST}`,
+        `https://api.themoviedb.org/3/account/${profile.id}/favorite/movies`,
         {
           params: {
-            query: params.search,
-            include_adult: 'false',
-            include_video: 'false',
             language: 'en-US',
-            page: current,
-            sort_by: params.sort,
-            with_genres: params.filter,
+            page: 1,
+            session_id: sessionId,
+            sort_by: 'created_at.dsc',
           },
         }
       )
@@ -33,22 +31,13 @@ export const useGetMovie = (params: Record<string, any>, current: Number) => {
         vote_average: movie.vote_average || '',
       }))
 
-      return { data: formattedData }
+      return formattedData
     },
   })
 }
 
-export const useGetGenre = () => {
-  return useQuery({
-    queryKey: ['getGenre'],
-    queryFn: async () => {
-      const res = await axiosInstance.get('/genre/movie/list')
-      return res.data.genres
-    },
-  })
-}
-
-export const useCreateFavoriteMovie = () => {
+export const useRemoveFavoriteMovie = () => {
+  const queryClient = useQueryClient()
   return useMutation({
     mutationKey: ['createFavoriteMovie'],
     mutationFn: async (id: number) => {
@@ -57,7 +46,7 @@ export const useCreateFavoriteMovie = () => {
       const data = {
         media_type: 'movie',
         media_id: id,
-        favorite: true,
+        favorite: false,
       }
       const res = await axiosInstance.post(
         `/account/${profile.id}/favorite?session_id=${sessionId}`,
@@ -66,6 +55,7 @@ export const useCreateFavoriteMovie = () => {
       return res.data
     },
     onSuccess: (data) => {
+      queryClient.invalidateQueries(['favoriteMovie'])
       message.destroy()
       message.open({
         type: 'success',

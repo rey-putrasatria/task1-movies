@@ -27,7 +27,7 @@ const MovieFeature: React.FC = () => {
   return (
     <Layout>
       <div className="w-full">
-        <div className='m-12'>
+        <div className='lg:my-12 my-8 lg:mx-12 mx-4'>
           <FormInput onSubmit={handleSubmit} />
         </div>
         <Row gutter={[16, 16]} className="lg:px-12 md:px-6 sm:px-6 px-4 my-2">

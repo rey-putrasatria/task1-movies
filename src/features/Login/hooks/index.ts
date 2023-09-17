@@ -1,13 +1,14 @@
 import {
+  fetchDetailProfile,
   fetchRequestToken,
   fetchSessionId,
   redirectToAuthentication,
 
 } from '@/services/LoginServices'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { message } from 'antd'
 
-export const useSessionIdQuery = () => {
+export const useSessionIdMutation = () => {
   return useMutation({
     mutationKey: ['sessionId'],
     mutationFn: (requestToken: string | null) => {
@@ -27,4 +28,13 @@ export const useRequestTokenMutation = () => {
       redirectToAuthentication(data)
     },
   })
+}
+
+export const useDetailProfile = (sessionId: string) => {
+  return useQuery({
+    queryKey: ['detailProfile'],
+    queryFn:  () => fetchDetailProfile(sessionId),
+    enabled: sessionId ? true : false
+    },
+  )
 }

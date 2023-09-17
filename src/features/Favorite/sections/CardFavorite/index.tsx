@@ -2,12 +2,13 @@ import React, { useEffect } from 'react'
 import MovieType from '@/types/MovieType'
 import { Card, message, Popover, Rate } from 'antd'
 import { PATH_IMAGE } from '@/constant/endpoint'
-import { FcLike } from 'react-icons/fc'
-import { useCreateFavoriteMovie } from '../../hooks'
+import { FaTrash } from 'react-icons/fa'
+import { useRemoveFavoriteMovie } from '../../hooks'
+// import { useCreateFavoriteMovie } from '../../hooks'
 
-const CardMovie = ({ data }: { data: MovieType }) => {
+const CardFavorite = ({ data }: { data: MovieType }) => {
   const { original_title, poster_path, release_date, vote_average, id } = data
-  const { mutate } = useCreateFavoriteMovie()
+  const { mutate } = useRemoveFavoriteMovie()
   const image = poster_path
     ? PATH_IMAGE + poster_path
     : 'https://static.vecteezy.com/system/resources/previews/005/337/799/original/icon-image-not-found-free-vector.jpg'
@@ -25,10 +26,13 @@ const CardMovie = ({ data }: { data: MovieType }) => {
           <div className="absolute inset-0 flex justify-end gap-2 top-0 bottom-0 a">
             <Popover
               placement="bottom"
-              content={<h1 className="text-center">Add To Favorite</h1>}
+              content={<h1 className="text-center">Delete from favorite</h1>}
               trigger={'hover'}
             >
-              <FcLike className="text-2xl m-4 cursor-pointer" onClick={() => mutate(id)}/>
+              <FaTrash
+                className="text-xl m-4 cursor-pointer text-red-500"
+                onClick={() => mutate(id)}
+              />
             </Popover>
           </div>
           <h3 className="text-xl font-semibold text-white">
@@ -48,4 +52,4 @@ const CardMovie = ({ data }: { data: MovieType }) => {
   )
 }
 
-export default CardMovie
+export default CardFavorite
