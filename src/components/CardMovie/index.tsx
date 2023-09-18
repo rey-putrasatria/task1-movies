@@ -1,5 +1,5 @@
+import { PATH_IMAGE } from '@/constant/endpoint'
 import MovieType from '@/types/MovieType'
-import { PATH_IMAGE } from '@/utils/endpoint'
 import { Card, Tag } from 'antd'
 
 const CardMovie = ({ data }: { data: MovieType }) => {
