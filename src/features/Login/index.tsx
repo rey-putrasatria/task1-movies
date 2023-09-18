@@ -16,8 +16,8 @@ const LoginFeature: React.FC = () => {
 
   useEffect(() => {
     if (router.query.request_token) {
-      const storage: string | null = sessionStorage.getItem('requestToken')
-      sessionMutate(storage)
+      // const storage: string | null = sessionStorage.getItem('requestToken')
+      sessionMutate(router.query.request_token as string)
     }
   }, [router.query.approved])
 
