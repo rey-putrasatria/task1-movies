@@ -18,6 +18,16 @@ const FavoriteFeature: React.FC = () => {
     return <Loading />
   }
 
+  if (isError) {
+    return (
+      <Layout>
+        <h1 className="text-[#0d253f] text-center text-2xl font-bold py-12">
+          You must login first! &#128521;
+        </h1>
+      </Layout>
+    )
+  }
+
   return (
     <Layout>
       <div className="w-full lg:px-12 px-4">
