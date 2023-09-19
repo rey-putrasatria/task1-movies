@@ -1,39 +1,21 @@
-import { MOVIE_LIST, MOVIE_SEARCH } from '@/constant/endpoint'
-import { getSessionId, getSessionProfile } from '@/helpers/storage'
-import axiosInstance from '@/services/adapter/axiosInstance'
-import { message } from 'antd'
-import MovieType from '@/types/MovieType'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  getGenres,
+  getMovies,
+} from '@/useCases/MovieUseCases'
+import { messageAlert } from '@/helpers/message'
+import { postFavoriteMovie } from '@/useCases/FavoriteUseCases'
 
-export const useGetMovie = (params: Record<string, any>, current: Number) => {
+export const useGetMovie = (params: Record<string, any>, current: number) => {
   return useQuery({
     queryKey: ['getMovies', { params, current }],
     queryFn: async () => {
-      const res = await axiosInstance.get(
-        `${params.search ? MOVIE_SEARCH : MOVIE_LIST}`,
-        {
-          params: {
-            query: params.search,
-            include_adult: 'false',
-            include_video: 'false',
-            language: 'en-US',
-            page: current,
-            sort_by: params.sort,
-            with_genres: params.filter,
-          },
-        }
-      )
-
-      const formattedData: MovieType[] = res.data.results.map((movie: any) => ({
-        id: movie.id || '',
-        original_title: movie.original_title || '',
-        poster_path: movie.poster_path || '',
-        release_date: movie.release_date || '',
-        overview: movie.overview || '',
-        vote_average: movie.vote_average || '',
-      }))
-
-      return { data: formattedData }
+      return getMovies({
+        page: current,
+        query: params.search,
+        sort_by: params.sort,
+        with_genres: params.filter,
+      })
     },
   })
 }
@@ -42,44 +24,28 @@ export const useGetGenre = () => {
   return useQuery({
     queryKey: ['getGenre'],
     queryFn: async () => {
-      const res = await axiosInstance.get('/genre/movie/list')
-      return res.data.genres
+      return getGenres()
     },
   })
 }
 
 export const useCreateFavoriteMovie = () => {
+  const queryClient = useQueryClient()
   return useMutation({
     mutationKey: ['createFavoriteMovie'],
     mutationFn: async (id: number) => {
-      const sessionId = getSessionId()
-      const profile = getSessionProfile()
-      const data = {
+      return postFavoriteMovie({
         media_type: 'movie',
         media_id: id,
         favorite: true,
-      }
-      const res = await axiosInstance.post(
-        `/account/${profile.id}/favorite?session_id=${sessionId}`,
-        data
-      )
-      return res.data
+      })
     },
     onSuccess: (data) => {
-      message.destroy()
-      message.open({
-        type: 'success',
-        content: data.status_message,
-        className: 'mt-[5.3rem]',
-      })
+      queryClient.invalidateQueries(['getMovies'])
+      messageAlert('success', data.status_message, 'mt-[5.3rem]')
     },
     onError: () => {
-      message.destroy()
-      message.open({
-        type: 'error',
-        content: 'You must be login again!',
-        className: 'mt-[5.3rem]',
-      })
+      messageAlert('error', 'You must be login again!', 'mt-[5.3rem]')
     },
   })
 }

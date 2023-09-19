@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react'
-import MovieType from '@/types/MovieType'
 import { Card, message, Popover, Rate } from 'antd'
 import { PATH_IMAGE } from '@/constant/endpoint'
 import { FcLike } from 'react-icons/fc'
+import { MdOutlineFavoriteBorder } from 'react-icons/md'
 import { useCreateFavoriteMovie } from '../../hooks'
+import { MoviesFormatedType } from '@/domains/Movie'
 
-const CardMovie = ({ data }: { data: MovieType }) => {
-  const { original_title, poster_path, release_date, vote_average, id } = data
+const CardMovie = ({ data }: { data: MoviesFormatedType }) => {
+  const { original_title, poster_path, isFavorite, vote_average, id } = data
   const { mutate } = useCreateFavoriteMovie()
   const image = poster_path
     ? PATH_IMAGE + poster_path
@@ -28,7 +29,17 @@ const CardMovie = ({ data }: { data: MovieType }) => {
               content={<h1 className="text-center">Add To Favorite</h1>}
               trigger={'hover'}
             >
-              <FcLike className="text-2xl m-4 cursor-pointer" onClick={() => mutate(id)}/>
+              {isFavorite ? (
+                <FcLike
+                  className="text-2xl m-4 cursor-pointer"
+                  onClick={() => mutate(id)}
+                />
+              ) : (
+                <MdOutlineFavoriteBorder
+                  className="text-2xl m-4 cursor-pointer text-white"
+                  onClick={() => mutate(id)}
+                />
+              )}
             </Popover>
           </div>
           <h3 className="text-xl font-semibold text-white">

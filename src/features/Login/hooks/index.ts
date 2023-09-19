@@ -1,21 +1,20 @@
+import { redirectToAuthentication } from '@/domains/Login'
+import { messageAlert } from '@/helpers/message'
 import {
-  fetchDetailProfile,
-  fetchRequestToken,
-  fetchSessionId,
-  redirectToAuthentication,
-
-} from '@/services/LoginServices'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { message } from 'antd'
+  getDetailProfile,
+  getRequestToken,
+  getSessionId,
+} from '@/useCases/LoginUseCases'
+import { useMutation, useQuery } from '@tanstack/react-query'
 
 export const useSessionIdMutation = () => {
   return useMutation({
     mutationKey: ['sessionId'],
-    mutationFn: (requestToken: string | null) => {
-      return fetchSessionId(requestToken)
+    mutationFn: (requestToken: string) => {
+      return getSessionId(requestToken)
     },
     onSuccess: () => {
-      message.success('Login Berhasil!')
+      messageAlert('success', 'Login Success!')
     },
   })
 }
@@ -23,7 +22,9 @@ export const useSessionIdMutation = () => {
 export const useRequestTokenMutation = () => {
   return useMutation({
     mutationKey: ['requestMutation'],
-    mutationFn: fetchRequestToken,
+    mutationFn: async () => {
+      return getRequestToken()
+    },
     onSuccess: (data) => {
       redirectToAuthentication(data)
     },
@@ -33,8 +34,9 @@ export const useRequestTokenMutation = () => {
 export const useDetailProfile = (sessionId: string) => {
   return useQuery({
     queryKey: ['detailProfile'],
-    queryFn:  () => fetchDetailProfile(sessionId),
-    enabled: sessionId ? true : false
+    queryFn: async () => {
+      return getDetailProfile(sessionId)
     },
-  )
+    enabled: sessionId ? true : false,
+  })
 }

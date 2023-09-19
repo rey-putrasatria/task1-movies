@@ -1,8 +1,8 @@
 import { PATH_IMAGE } from '@/constant/endpoint'
-import MovieType from '@/types/MovieType'
+import { MoviesType } from '@/domains/Movie'
 import { Card, Tag } from 'antd'
 
-const CardMovie = ({ data }: { data: MovieType }) => {
+const CardMovie = ({ data }: { data: MoviesType }) => {
   const { original_title, poster_path, release_date } = data
 
   return (

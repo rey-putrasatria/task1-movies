@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
-import MovieType from '@/types/MovieType'
 import { Card, message, Popover, Rate } from 'antd'
 import { PATH_IMAGE } from '@/constant/endpoint'
 import { FaTrash } from 'react-icons/fa'
 import { useRemoveFavoriteMovie } from '../../hooks'
+import { MoviesFormatedType } from '@/domains/Movie'
 // import { useCreateFavoriteMovie } from '../../hooks'
 
-const CardFavorite = ({ data }: { data: MovieType }) => {
+const CardFavorite = ({ data }: { data: MoviesFormatedType }) => {
   const { original_title, poster_path, release_date, vote_average, id } = data
   const { mutate } = useRemoveFavoriteMovie()
   const image = poster_path

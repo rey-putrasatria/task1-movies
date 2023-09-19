@@ -14,14 +14,13 @@ export const useRemoveSession = () => {
           process.env.API_KEY
         }&session_id=${getSessionId()}`
       )
-      console.log(res.data)
       return res.data
     },
     onSuccess: () => {
       removeAllStorage()
       message.open({
         type: 'success',
-        content: 'Logout success!',
+        content: 'Logout success, Wait 2 Seconds!',
         duration: 2,
         onClose: () => {
           router.push('/')
