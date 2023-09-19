@@ -20,6 +20,10 @@ export type MoviesRequestParams = {
   with_genres?: string
 }
 
+export const formatRatesMovie = (rate: number): string => {
+    return rate.toFixed(1)
+}
+
 export const formatMovies = (value: MoviesType): MoviesFormatedType[] => {
   return value.data.results.map((movie: any) => ({
     id: movie.id || '',

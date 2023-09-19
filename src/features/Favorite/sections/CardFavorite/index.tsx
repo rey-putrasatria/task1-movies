@@ -3,7 +3,7 @@ import { Card, message, Popover, Rate } from 'antd'
 import { PATH_IMAGE } from '@/constant/endpoint'
 import { FaTrash } from 'react-icons/fa'
 import { useRemoveFavoriteMovie } from '../../hooks'
-import { MoviesFormatedType } from '@/domains/Movie'
+import { formatRatesMovie, MoviesFormatedType } from '@/domains/Movie'
 // import { useCreateFavoriteMovie } from '../../hooks'
 
 const CardFavorite = ({ data }: { data: MoviesFormatedType }) => {
@@ -42,7 +42,9 @@ const CardFavorite = ({ data }: { data: MoviesFormatedType }) => {
           </h3>
           {vote_average > 2 ? (
             <div className="lg:flex gap-1 items-center">
-              <p className="text-yellow-400 mt-1">{vote_average}</p>
+              <p className="text-yellow-400 mt-1">
+                {formatRatesMovie(vote_average)}
+              </p>
               <Rate disabled defaultValue={(vote_average * 5) / 10} count={5} />
             </div>
           ) : null}
